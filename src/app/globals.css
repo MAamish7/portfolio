@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn semantic tokens, tuned for the dark cinematic theme */
+    --background: 240 6% 2%;
+    --foreground: 210 20% 96%;
+    --card: 225 12% 6%;
+    --card-foreground: 210 20% 96%;
+    --primary: 219 100% 66%;
+    --primary-foreground: 225 40% 8%;
+    --secondary: 225 12% 12%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 225 10% 14%;
+    --muted-foreground: 220 10% 62%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 14% 18%;
+    --input: 220 14% 16%;
+    --ring: 219 100% 66%;
+    --radius: 0.75rem;
+
+    /* Raw palette, also consumed by the WebGL scene */
+    --c-blue: #4f8cff;
+    --c-cyan: #4fe3e3;
+    --c-violet: #a46bff;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis drives scrolling; native smooth scroll would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-ink text-foreground font-sans antialiased;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(79, 140, 255, 0.28);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1c2230, #2a3346);
+    border-radius: 999px;
+    border: 2px solid #050505;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #38445c;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-cyan);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Only hide the system cursor where the custom one actually renders. */
+  @media (hover: hover) and (pointer: fine) {
+    html.has-custom-cursor,
+    html.has-custom-cursor * {
+      cursor: none;
+    }
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl;
+  }
+
+  .glass-strong {
+    @apply border border-white/10 bg-white/[0.055] backdrop-blur-2xl;
+  }
+
+  /* Thin gradient hairline used to separate major sections */
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.28em] text-white/45;
+  }
+
+  /* Display sizes live here rather than as `text-*` utilities: tailwind-merge
+     cannot tell a custom `text-<size>` from a custom `text-<colour>`, so
+     pairing them (e.g. with .text-gradient) silently drops one. */
+  .heading-hero {
+    font-size: clamp(3rem, 12vw, 11rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+  }
+
+  .heading-xl {
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .heading-lg {
+    font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-br from-white via-white to-white/40 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-accent {
+    @apply bg-gradient-to-r from-accent via-accent-cyan to-accent-violet bg-clip-text text-transparent;
+  }
+
+  /* Outlined display type — the second line of the hero headline */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.55);
+  }
+  @supports not (-webkit-text-stroke: 1px white) {
+    .text-outline {
+      color: rgba(255, 255, 255, 0.35);
+    }
+  }
+
+  .grid-backdrop {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .noise-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@layer utilities {
+  .section-padding {
+    @apply px-5 py-24 sm:px-8 md:py-32 lg:px-14;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+/* GSAP writes inline styles; these are the pre-animation resting states so
+   nothing flashes before the timelines take over. */
+[data-animate='fade-up'] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-animate='fade'] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
