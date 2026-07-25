@@ -1,10 +1,16 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Builds both apps and publishes them to GitHub Pages.
+#
+#   /            → the Next.js portfolio (static export)
+#   /lumina/     → the Lumina landing page (Vite build)
+#
+# Pages serves a project repository from /<repo>, so both builds are handed
+# that base path up front and emit every asset URL with the prefix.
+name: Deploy to Pages
 
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -18,26 +24,67 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # The portfolio, served at the site root.
+      - name: Install portfolio dependencies
+        run: npm ci
+
+      - name: Build portfolio
+        env:
+          NEXT_OUTPUT: export
+          NEXT_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build
+
+      # The Lumina page, nested under /lumina/.
+      - name: Install Lumina dependencies
+        working-directory: lumina
+        run: npm ci
+
+      - name: Build Lumina
+        working-directory: lumina
+        env:
+          VITE_BASE: ${{ steps.pages.outputs.base_path }}/lumina/
+        run: npm run build
+
+      - name: Assemble site
+        run: |
+          mkdir -p out/lumina
+          cp -r lumina/dist/. out/lumina/
+          # Without this, Pages runs the artifact through Jekyll, which strips
+          # the _next directory because its name begins with an underscore.
+          touch out/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'out'
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4

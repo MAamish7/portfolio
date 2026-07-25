@@ -21,7 +21,7 @@ import { MagneticButton } from '@/components/ui/MagneticButton';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { SITE } from '@/constants/site';
 import { useSound } from '@/hooks/useSound';
-import { cn } from '@/lib/utils';
+import { asset, cn } from '@/lib/utils';
 
 type FormState = { name: string; email: string; subject: string; message: string };
 type FormErrors = Partial<Record<keyof FormState, string>>;
@@ -332,7 +332,7 @@ export function Contact() {
               </p>
               <MagneticButton className="self-start">
                 <Button variant="outline" asChild>
-                  <a href={SITE.resume} download data-cursor="PDF">
+                  <a href={asset(SITE.resume)} download data-cursor="PDF">
                     Download PDF
                     <Download className="h-4 w-4" />
                   </a>
