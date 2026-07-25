@@ -12,6 +12,7 @@ import { Marquee } from '@/components/ui/Marquee';
 import { MARQUEE_WORDS, SITE } from '@/constants/site';
 import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 import { EASE, gsap } from '@/lib/gsap';
+import { asset } from '@/lib/utils';
 
 // The WebGL bundle is heavy and purely decorative — keep it out of the
 // critical path and off the server.
@@ -128,7 +129,7 @@ export function Hero() {
               aria-hidden
             />
             <Image
-              src="/images/figure-a.png"
+              src={asset('/images/figure-a.png')}
               alt={`${SITE.name}, ${SITE.role}`}
               width={900}
               height={2000}
@@ -207,7 +208,7 @@ export function Hero() {
                 </MagneticButton>
                 <MagneticButton>
                   <Button variant="outline" size="lg" asChild>
-                    <a href={SITE.resume} download data-cursor="PDF">
+                    <a href={asset(SITE.resume)} download data-cursor="PDF">
                       Résumé
                       <Download className="h-4 w-4" />
                     </a>

@@ -6,6 +6,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Base path the site is served from. Empty on Vercel (domain root), `/portfolio`
+ * on GitHub Pages, which serves a project repo from a subdirectory.
+ */
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
+/**
+ * Prefixes a public-folder path with the base path.
+ *
+ * Next rewrites its own `_next/*` URLs automatically, but plain `href`s and
+ * `next/image` sources for unoptimised images are left alone — without this
+ * they resolve against the domain root and 404 on Pages.
+ */
+export const asset = (path: string) => `${BASE_PATH}${path}`;
+
 /** Clamp a number into a range. */
 export const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);

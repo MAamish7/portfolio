@@ -11,6 +11,7 @@ import { RevealText } from '@/components/ui/RevealText';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { CORE_TOOLS } from '@/constants/skills';
 import { OBJECTIVE, SITE, STATS } from '@/constants/site';
+import { asset } from '@/lib/utils';
 
 const FACTS = [
   { icon: GraduationCap, label: 'Degree', value: 'B.E. Mechanical Engineering' },
@@ -38,7 +39,7 @@ export function About() {
           <motion.div style={{ y: portraitY }} className="lg:col-span-5">
             <div className="group relative overflow-hidden rounded-3xl border border-white/[0.08]">
               <Image
-                src="/images/headshot-a.jpg"
+                src={asset('/images/headshot-a.jpg')}
                 alt={`Portrait of ${SITE.name}`}
                 width={1000}
                 height={1000}
